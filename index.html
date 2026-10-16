@@ -789,5 +789,19 @@
 
         window.onload = render;
     </script>
+
+    <!-- AUTOMATIC REFERRAL CODE TRACKING SCRIPT -->
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const refCode = urlParams.get('ref') || new URLSearchParams(window.location.search).get('p');
+            
+            if (refCode) {
+                const cleanRef = refCode.replace('?ref=', '').replace('/', '');
+                localStorage.setItem('vortex_referred_by', cleanRef);
+                console.log("Referred by: " + cleanRef);
+            }
+        });
+    </script>
 </body>
 </html>
